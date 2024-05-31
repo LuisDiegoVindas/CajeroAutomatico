@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>  
+    <title>Cajero - Banco Horizonte</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Stlyle.css">
+</head>
+<body>
+    <!-- Interfaz del menú de inicio -->
+    <div class="container mt-5" id="menu">
+        <div class="card">
+            <h2 class="card-header text-center">¿Qué deseas hacer?</h2>
+            <div class="card-body">
+                <button onclick="retiroMenu()" class="btn btn-primary btn-block my-3">Retiro</button>
+                <button onclick="depositoMenu()" class="btn btn-success btn-block my-3">Depósito</button>
+                <button onclick="consultaMenu()" class="btn btn-info btn-block my-3">Consultar saldo</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mt-5">
+        <!-- Retiro de dinero -->
+        <div class="card" id="extraer">
+            <div class="card-header text-center">
+                <button onclick="menuHi()" class="btn btn-outline-secondary atras">atrás</button>
+                <h2 class="text-center">Retiro</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="extraerDinero(event)">
+                    <div class="form-group">
+                        <label for="pin">Número de pin</label>
+                        <input type="password" class="form-control" id="pin" placeholder="xxxx" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="monto">Monto</label>
+                        <input type="number" class="form-control" id="monto" placeholder="ej $5000" required/>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sacar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Depósito de dinero -->
+        <div class="card" id="depositar">
+            <div class="card-header text-center">
+                <button onclick="menuHi()" class="btn btn-outline-secondary atras">atrás</button>
+                <h2 class="text-center">Depósito</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="depositarDinero(event)">
+                    <div class="form-group">
+                        <label for="pin-dep">Número de pin</label>
+                        <input type="password" class="form-control" id="pin-dep" placeholder="xxxx" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="monto-dep">Monto</label>
+                        <input type="number" class="form-control" id="monto-dep" placeholder="ej $5000" required/>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Depositar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Consulta de saldo -->
+        <div class="card" id="consultar">
+            <div class="card-header text-center">
+                <button onclick="menuHi()" class="btn btn-outline-secondary atras">atrás</button>
+                <h2 class="text-center">Consulta</h2>
+            </div>
+            <div class="card-body">
+                <form onsubmit="consultarSaldo(event)">
+                    <div class="form-group">
+                        <label for="pin-cons">Número de pin</label>
+                        <input type="password" class="form-control" id="pin-cons" placeholder="xxxx" required/>
+                    </div>
+                    <button type="submit" class="btn btn-info btn-block">Consultar Saldo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Imagen de fondo -->
+    <img id="cajerito" src="https://assets-global.website-files.com/62a14eafd65c866accb89653/6639678bd5b43f509d453388_ATM-Comun.png" alt="">
+
+
+
+    <!-- JavaScript -->
+    <script>
+        var pinCorrecto = 5555;
+        var montoTotal = 250000;
+
+        var menuVisible = true;
+        var menuBack = false;
+
+        var retiroVisible = false;
+        var depositoVisible = false;
+        var consultaVisible = false;
+
+        var imagenDifuminada = false;
+
+        // Refresca el estado de la página habilitando la visibilidad del menú que esté en true (si me saliooooooooo)
+        function status(){
+            if (menuVisible == true){
+                document.getElementById("menu").style.display = 'block';
+                document.getElementById("extraer").style.display = 'none';
+                document.getElementById("depositar").style.display = 'none';
+                document.getElementById("consultar").style.display = 'none';
+                imageUnblur();
+            }
+            else if(menuVisible == false && retiroVisible == true){
+                document.getElementById("menu").style.display = 'none';
+                document.getElementById("extraer").style.display = 'block';
+            }
+            else if(menuVisible == false && depositoVisible == true){
+                document.getElementById("menu").style.display = 'none';
+                document.getElementById("depositar").style.display = 'block';
+            }
+            else if(menuVisible == false && consultaVisible == true){
+                document.getElementById("menu").style.display = 'none';
+                document.getElementById("consultar").style.display = 'block';
+            } else {
+                alert("Ha surgido un error en el status")
+            }
+        }
+
+        // Funciones para difuminar el fondo y quitar el difuminado
+        function imageBlur(){
+            document.getElementById("cajerito").style.filter = 'blur(10px)'
+        }
+        function imageUnblur(){
+            document.getElementById("cajerito").style.filter = 'blur(0px)'
+        }
+
+
+        // Función para volver al menú
+        function menuHi(){
+            menuVisible = true;
+            retiroVisible = false;
+            depositoVisible = false;
+            consultaVisible = false;
+            status();
+        }
+
+
+        // Funciones para acceder a los diferentes menús
+        function retiroMenu(){
+            menuVisible = false;
+            retiroVisible = true;
+            status();
+            imageBlur();
+        }
+
+        function depositoMenu(){
+            menuVisible = false;
+            depositoVisible = true;
+            status();
+            imageBlur();
+
+        }
+        function consultaMenu(){
+            menuVisible = false;
+            consultaVisible = true;
+            status();
+            imageBlur();
+        }
+        
+
+        // Funciones para mover dinero como retirar, depositar y consultar saldo.
+        function extraerDinero(event) {
+            event.preventDefault();
+            var pin = document.getElementById("pin").value;
+            var monto = parseFloat(document.getElementById("monto").value);
+
+            if (monto > 0 && pin == pinCorrecto) {
+                if (montoTotal >= monto) {
+                    montoTotal -= monto;
+                    alert(`Has extraído ¢${monto}`);
+                    alert(`El monto restante es ¢${montoTotal}`);
+                } else {
+                    alert(`Los fondos no son suficientes, actualmente tienes: ¢${montoTotal}`);
+                }
+            } else if (monto <= 0) {
+                alert("Debes ingresar un monto mayor a 0");
+            } else {
+                alert("El pin ingresado no es correcto");
+            }
+        }
+
+        function depositarDinero(event) {
+            event.preventDefault();
+            var pin = document.getElementById("pin-dep").value;
+            var monto = parseFloat(document.getElementById("monto-dep").value);
+
+            if(monto > 0 && pin == pinCorrecto){
+                montoTotal += monto;
+                alert(`Has depositado ¢${monto}`)
+                alert(`Ahora el monto es de: ¢${montoTotal}`)
+            }else if(monto <= 0){
+                alert("Debes ingresar un monto mayor a 0")
+            }else{
+                alert("El pin ingresado no es correcto")
+            }
+
+        }
+
+        function consultarSaldo(event) {
+            event.preventDefault();
+            var pin = document.getElementById("pin-cons").value
+
+            if(pin == pinCorrecto){
+                alert(`Su monto actual es de: ¢${montoTotal}`)
+            }else{
+                alert(`El pin ingresado no es correcto`)
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

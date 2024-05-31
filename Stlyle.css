@@ -1,0 +1,34 @@
+/* body{
+
+} */
+
+.blurred {
+    filter: blur(5px);
+}
+.visible{
+    display: block;
+}
+
+#cajerito{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+}
+
+#extraer{
+    display: none;
+}
+#depositar{
+    display: none;
+}
+
+#consultar{
+    display: none;
+}
+
+.atras{
+    position: absolute;
+    left: 4.1%;
+}
